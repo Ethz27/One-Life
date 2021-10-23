@@ -9,7 +9,10 @@ public class Gun : MonoBehaviour
 	public Transform gunPoint;
 	public string bullet;
 	public float bulletSpeed = 10f;
+	public float fireRate = 0.1f;
+	
 	Vector2 dir;
+	float timeTillNextShot;
 	// Start is called before the first frame update
     void Start()
     {

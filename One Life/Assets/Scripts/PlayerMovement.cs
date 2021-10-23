@@ -16,6 +16,9 @@ public class PlayerMovement : MonoBehaviour
 	float currentJumpsLeft;
 	bool isGrounded;
 	
+	[Header("Surface Settings")]
+	public float rotateWithGroundSize = 5f;
+	
 	[Header("Wall Jump Settings")]
 	public float wallJumpTime = 0.2f;
 	public float wallSlideSpeed = 0.3f;
@@ -27,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
 	bool isTouchingWall;
 	bool isWalllSliding;
 	float jumpTime;
+	
+	bool dead;
 	
 	//[Space(5)]
 	
@@ -44,12 +49,15 @@ public class PlayerMovement : MonoBehaviour
 	
 	void Update()
 	{
+		if(dead) return;
 		Jump();
 		InputLogic();
+		RotateWithSurface();
 	}
 	
 	void FixedUpdate()
 	{
+		if(dead) return;
 		CheckWorld();
 		FlipPlayer();
 		Move();
@@ -141,6 +149,22 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 	
+	void RotateWithSurface()
+	{
+		 RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, -groundCheck.transform.up, rotateWithGroundSize, whatIsGround);
+		 
+		 if(hit.collider != null)
+		 {
+			 this.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+		 }
+		 else
+		 {
+			 this.transform.rotation = Quaternion.FromToRotation(Vector3.forward, Vector3.zero);
+		 }
+		
+		
+	}
+	
 	void OnDrawGizmosSelected()
 	{
 		Gizmos.color = Color.blue;
@@ -153,5 +177,11 @@ public class PlayerMovement : MonoBehaviour
 	public bool IsFacingRight()
 	{
 		return isFacingRight;
+	}
+	
+	public void Dead()
+	{
+		dead = true;
+		speed = 0;
 	}
 }
