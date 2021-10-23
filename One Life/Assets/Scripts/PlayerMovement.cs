@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
 	bool isWalllSliding;
 	float jumpTime;
 	
+	//[Space(5)]
+	
 	//Priv var
 	Rigidbody2D rb;
 	float speed;
@@ -124,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
 			currentJumpsLeft = 0;
 		}
 		
-		if(isWalllSliding && (Input.GetButtonDown("Jump") || !isTouchingWall))
+		if(isWalllSliding && !isTouchingWall)
 		{
 			rb.velocity = new Vector2(moveInput * wallJumpSpeed, jumpForce);
 		}
@@ -146,5 +148,10 @@ public class PlayerMovement : MonoBehaviour
 		
 		Gizmos.color = Color.red;
 		Gizmos.DrawCube(wallCheckPoint.position, wallCheckSize);
+	}
+	
+	public bool IsFacingRight()
+	{
+		return isFacingRight;
 	}
 }
