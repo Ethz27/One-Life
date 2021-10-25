@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -18,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
 	
 	[Header("Surface Settings")]
 	public float rotateWithGroundSize = 5f;
+	public float rotateOnSurfaceSmoothness;
 	
 	[Header("Wall Jump Settings")]
 	public float wallJumpTime = 0.2f;
@@ -27,9 +30,14 @@ public class PlayerMovement : MonoBehaviour
 	public LayerMask whatIsWall;
 	public float wallJumpSpeed = 5f;
 	public float changingWallSpeed = 0.5f;
+	
+	public UnityEvent onDeath;
+	
+	
 	bool isTouchingWall;
 	bool isWalllSliding;
 	float jumpTime;
+	bool justGrounded;
 	
 	bool dead;
 	
@@ -105,7 +113,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		if(isGrounded) currentJumpsLeft = extraJumps;
 		
-		if(isGrounded && Input.GetButtonDown("Jump"))
+		if(isGrounded)
 		{
 			rb.velocity = new Vector2(rb.velocity.x, jumpForce);
 		}
@@ -113,6 +121,27 @@ public class PlayerMovement : MonoBehaviour
 		{
 			rb.velocity = new Vector2(rb.velocity.x, jumpForce);
 			currentJumpsLeft--;
+			GameObject obj = ObjectPool.instance.GetPooledObject("DoubleJumpEffect");
+			obj.transform.position = groundCheck.position;
+			obj.transform.rotation = groundCheck.rotation;
+			obj.SetActive(true);
+			var emitParams = new ParticleSystem.EmitParams();
+			obj.GetComponent<ParticleSystem>().Emit(emitParams, 10);
+		}
+		
+		if(isGrounded && !justGrounded)
+		{
+			justGrounded = true;
+			GameObject obj = ObjectPool.instance.GetPooledObject("GroundedEffect");
+			obj.transform.position = groundCheck.position;
+			obj.transform.rotation = groundCheck.rotation;
+			obj.SetActive(true);
+			var emitParams = new ParticleSystem.EmitParams();
+			obj.GetComponent<ParticleSystem>().Emit(emitParams, 10);
+		}
+		else if(!isGrounded)
+		{
+			justGrounded = false;
 		}
 	}
 	
@@ -155,11 +184,13 @@ public class PlayerMovement : MonoBehaviour
 		 
 		 if(hit.collider != null)
 		 {
-			 this.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+			 Quaternion targetRot = Quaternion.FromToRotation(Vector3.up, hit.normal);
+			 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, rotateOnSurfaceSmoothness * Time.deltaTime);
 		 }
 		 else
 		 {
-			 this.transform.rotation = Quaternion.FromToRotation(Vector3.forward, Vector3.zero);
+			 Quaternion targetRot = Quaternion.FromToRotation(Vector3.forward, Vector3.zero);
+			 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, rotateOnSurfaceSmoothness * Time.deltaTime);
 		 }
 		
 		
@@ -183,5 +214,11 @@ public class PlayerMovement : MonoBehaviour
 	{
 		dead = true;
 		speed = 0;
+		onDeath.Invoke();
+	}
+	
+	public bool IsDead()
+	{
+		return dead;
 	}
 }

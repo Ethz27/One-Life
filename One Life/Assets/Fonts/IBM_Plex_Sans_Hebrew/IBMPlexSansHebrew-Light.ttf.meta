@@ -1,0 +1,27 @@
+fileFormatVersion: 2
+guid: 3eb4e5ec8821899479ca8ca0617c968f
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - IBM Plex Sans Hebrew
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 14edc55eb09591b439379e0128cf1042, type: 3}
+  - {fileID: 12800000, guid: f7240bcdf75a11d4f8b3a2297530b1e5, type: 3}
+  - {fileID: 12800000, guid: 11df112d4e58e7949996e8065c8349bd, type: 3}
+  - {fileID: 12800000, guid: 6d417466d4bba8546b08c6742e606bca, type: 3}
+  - {fileID: 12800000, guid: 5c413256c224e3947a22c73a1e7ec093, type: 3}
+  - {fileID: 12800000, guid: 48a01338121a4ff45a51c53dfbb22708, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
